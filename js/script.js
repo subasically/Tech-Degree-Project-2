@@ -16,16 +16,17 @@ FSJS project 2 - List Filter and Pagination
    will only be used inside of a function, then it can be locally 
    scoped to that function.
 ***/
-
+const studentList = document.getElementsByClassName('student-item');
+const pageLength = 10;
 
 
 
 /*** 
    Create the `showPage` function to hide all of the items in the 
-   list except for the ten you want to show.
+   studentList except for the ten you want to show.
 
    Pro Tips: 
-     - Keep in mind that with a list of 54 students, the last page 
+     - Keep in mind that with a studentList of 54 students, the last page 
        will only display four.
      - Remember that the first student has an index of 0.
      - Remember that a function `parameter` goes in the parens when 
@@ -34,7 +35,18 @@ FSJS project 2 - List Filter and Pagination
        that will be passed into the parens later when you call or 
        "invoke" the function 
 ***/
+function showPage(studentList, page) {
+   const start = (page * pageLength) - pageLength;
+   const end = page * pageLength;
 
+   for (let i = 0; i < studentList.length; i++) {
+      if (i >= start && i <= end) {
+         studentList[i].style.display = 'block';
+      } else {
+         studentList[i].style.display = 'none';
+      }
+   }
+}
 
 
 
@@ -42,7 +54,9 @@ FSJS project 2 - List Filter and Pagination
    Create the `appendPageLinks function` to generate, append, and add 
    functionality to the pagination buttons.
 ***/
+function appendPageLinks(studentList) {
 
+}
 
 
 
