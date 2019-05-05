@@ -2,7 +2,7 @@
 Treehouse Techdegree:
 FSJS project 2 - List Filter and Pagination
 ******************************************/
-   
+
 // Study guide for this project - https://drive.google.com/file/d/1OD1diUsTMdpfMDv677TfL1xO2CEkykSz/view?usp=sharing
 
 
@@ -16,17 +16,17 @@ FSJS project 2 - List Filter and Pagination
    will only be used inside of a function, then it can be locally 
    scoped to that function.
 ***/
-const studentList = document.getElementsByClassName('student-item');
 const pageLength = 10;
+const list = document.getElementsByClassName('student-item');
 
 
 
 /*** 
    Create the `showPage` function to hide all of the items in the 
-   studentList except for the ten you want to show.
+   list except for the ten you want to show.
 
    Pro Tips: 
-     - Keep in mind that with a studentList of 54 students, the last page 
+     - Keep in mind that with a list of 54 students, the last page 
        will only display four.
      - Remember that the first student has an index of 0.
      - Remember that a function `parameter` goes in the parens when 
@@ -35,34 +35,60 @@ const pageLength = 10;
        that will be passed into the parens later when you call or 
        "invoke" the function 
 ***/
-function showPage(studentList, page) {
+function showPage(list, page) {
    const start = (page * pageLength) - pageLength;
-   const end = page * pageLength;
+   const end = (page * pageLength) - 1;
 
-   for (let i = 0; i < studentList.length; i++) {
+   for (let i = 0; i < list.length; i++) {
       if (i >= start && i <= end) {
-         studentList[i].style.display = 'block';
+         list[i].style.display = 'block';
       } else {
-         studentList[i].style.display = 'none';
+         list[i].style.display = 'none';
       }
    }
 
-   appendPageLinks(studentList);
+   appendPageLinks(list);
 }
 
-showPage(studentList, 1);
+showPage(list, 1);
 
 /*** 
    Create the `appendPageLinks function` to generate, append, and add 
    functionality to the pagination buttons.
 ***/
-function appendPageLinks(studentList) {
+function appendPageLinks(list) {
    const page = document.getElementsByClassName('page');
    const pagination = document.createElement('div');
    const ul = document.createElement('ul');
-   pagination.setAttribute('class', 'pagination');
-   page[0].appendChild(pagination);
+   const paginationLength = Math.ceil(list.length / pageLength);
 
+
+   if (!document.querySelector('div.pagination')) {
+      page[0].appendChild(pagination).appendChild(ul);
+      pagination.setAttribute('class', 'pagination');
+   }
+
+   for (let i = 0; i < paginationLength; i++) {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.textContent = i + 1;
+      a.href = '#';
+      if (i === 0) {
+         a.className = 'active';
+      }
+      a.addEventListener('click', function (e) {
+         e.preventDefault();
+         const current = e.target;
+         const items = ul.getElementsByTagName('li');
+         for (let i = 0; i < items.length; i++) {
+            items[i].children[0].className = '';
+         }
+         current.className = 'active';
+         showPage(list, current.textContent);
+      })
+      li.appendChild(a);
+      ul.appendChild(li);
+   }
 }
 
 
