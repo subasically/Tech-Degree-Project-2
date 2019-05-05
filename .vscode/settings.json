@@ -1,0 +1,8 @@
+{
+    "editor.fontFamily": "Inconsolata, Consolas, 'Courier New', monospace",
+    "editor.tabSize": 2,
+    "files.autoSave": "afterDelay",
+    "editor.multiCursorModifier": "ctrlCmd",
+    "editor.autoClosingBrackets": "beforeWhitespace",
+    "editor.autoClosingQuotes": "beforeWhitespace"
+}

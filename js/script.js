@@ -46,15 +46,22 @@ function showPage(studentList, page) {
          studentList[i].style.display = 'none';
       }
    }
+
+   appendPageLinks(studentList);
 }
 
-
+showPage(studentList, 1);
 
 /*** 
    Create the `appendPageLinks function` to generate, append, and add 
    functionality to the pagination buttons.
 ***/
 function appendPageLinks(studentList) {
+   const page = document.getElementsByClassName('page');
+   const pagination = document.createElement('div');
+   const ul = document.createElement('ul');
+   pagination.setAttribute('class', 'pagination');
+   page[0].appendChild(pagination);
 
 }
 
