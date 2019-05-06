@@ -32,7 +32,6 @@ function showPage(list, page) {
          list[i].style.display = 'none';
       }
    }
-   appendPageLinks(list);
 };
 
 /*** 
@@ -40,22 +39,24 @@ function showPage(list, page) {
    page number to show.
 ***/
 showPage(list, 1);
+appendPageLinks(list);
 
 
 /***
    Take the 'list' param and create the pagination links
 ***/
-function appendPageLinks(list) {
+function appendPageLinks(list, paginationLength) {
    const page = document.getElementsByClassName('page');
+   paginationLength = Math.ceil(list.length / pageLength);
    const pagination = document.createElement('div');
    const ul = document.createElement('ul');
-   const paginationLength = Math.ceil(list.length / pageLength);
-
 
    if (!document.querySelector('div.pagination')) {
       page[0].appendChild(pagination).appendChild(ul);
       pagination.setAttribute('class', 'pagination');
    }
+
+   //TODO: Handle search pagination here
 
    for (let i = 0; i < paginationLength; i++) {
       const li = document.createElement('li');
@@ -78,4 +79,41 @@ function appendPageLinks(list) {
       li.appendChild(a);
       ul.appendChild(li);
    }
+};
+
+/***
+   Create the search box and handle the search logic
+***/
+searchPage();
+
+function searchPage() {
+   const pageHeader = document.getElementsByClassName('page-header');
+   const searchDiv = document.createElement('div');
+   const searchInput = document.createElement('input');
+   const searchBtn = document.createElement('button');
+
+   searchDiv.className = 'student-search';
+   searchInput.placeholder = 'Search for students...';
+   searchBtn.textContent = 'Search';
+
+   pageHeader[0].appendChild(searchDiv).appendChild(searchInput);
+   searchDiv.appendChild(searchBtn);
+
+   searchBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      const searchTerm = searchInput.value.toUpperCase();
+      const searchResults = [];
+
+      for (let i = 0; i < list.length; i++) {
+         const studentName = list[i].getElementsByTagName('h3')[0].textContent;
+         if (studentName.toUpperCase().indexOf(searchTerm) > -1) {
+            searchResults.push(list[i]);
+         } else {
+            list[i].style.display = 'none';
+         }
+      }
+
+      showPage(searchResults, 1);
+      appendPageLinks(searchResults);
+   });
 };
