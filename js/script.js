@@ -45,28 +45,32 @@ appendPageLinks(list);
 /***
    Take the 'list' param and create the pagination links
 ***/
-function appendPageLinks(list, paginationLength) {
-   const page = document.getElementsByClassName('page');
-   paginationLength = Math.ceil(list.length / pageLength);
-   const pagination = document.createElement('div');
+function appendPageLinks(list) {
+   const page = document.querySelector('div.page');
+   const div = document.createElement('div');
    const ul = document.createElement('ul');
+   // Determine how many pagination <li> we need
+   paginationLength = Math.ceil(list.length / pageLength);
 
    if (!document.querySelector('div.pagination')) {
-      page[0].appendChild(pagination).appendChild(ul);
-      pagination.setAttribute('class', 'pagination');
+      page.appendChild(div);
+      div.setAttribute('class', 'pagination');
+      div.appendChild(ul);
+   } else {
+      // Clear pagination list
+      document.querySelector("div.pagination > ul").remove();
+      document.querySelector("div.pagination").appendChild(ul);
    }
 
-   //TODO: Handle search pagination here
-
+   // Create the <li> with <a> inside
    for (let i = 0; i < paginationLength; i++) {
       const li = document.createElement('li');
-      const a = document.createElement('a');
-      a.textContent = i + 1;
-      a.href = '#';
-      if (i === 0) {
-         a.className = 'active';
-      }
-      a.addEventListener('click', function (e) {
+      const anchor = document.createElement('a');
+      const anchorText = document.createTextNode(i + 1);
+      anchor.setAttribute('href', '#');
+      i === 0 ? anchor.setAttribute('class', 'active') : '';
+
+      anchor.addEventListener('click', function (e) {
          e.preventDefault();
          const current = e.target;
          const items = ul.getElementsByTagName('li');
@@ -76,44 +80,60 @@ function appendPageLinks(list, paginationLength) {
          current.className = 'active';
          showPage(list, current.textContent);
       })
-      li.appendChild(a);
-      ul.appendChild(li);
+      ul.appendChild(li).appendChild(anchor).appendChild(anchorText);
    }
 };
 
 /***
    Create the search box and handle the search logic
 ***/
-searchPage();
+const pageHeader = document.getElementsByClassName('page-header');
+const searchDiv = document.createElement('div');
+const searchInput = document.createElement('input');
+const searchBtn = document.createElement('button');
 
-function searchPage() {
-   const pageHeader = document.getElementsByClassName('page-header');
-   const searchDiv = document.createElement('div');
-   const searchInput = document.createElement('input');
-   const searchBtn = document.createElement('button');
+searchDiv.className = 'student-search';
+searchInput.placeholder = 'Search for students...';
+searchBtn.textContent = 'Search';
 
-   searchDiv.className = 'student-search';
-   searchInput.placeholder = 'Search for students...';
-   searchBtn.textContent = 'Search';
+pageHeader[0].appendChild(searchDiv).appendChild(searchInput);
+searchDiv.appendChild(searchBtn);
 
-   pageHeader[0].appendChild(searchDiv).appendChild(searchInput);
-   searchDiv.appendChild(searchBtn);
+const message = document.createElement('p');
+message.style.textAlign = 'center';
+message.id = 'noResultsMessage';
+document.querySelector('.student-list').appendChild(message);
 
-   searchBtn.addEventListener('click', function (e) {
-      e.preventDefault();
-      const searchTerm = searchInput.value.toUpperCase();
-      const searchResults = [];
+const doSearch = () => {
+   const searchTerm = searchInput.value.toUpperCase();
+   const searchResults = [];
 
-      for (let i = 0; i < list.length; i++) {
-         const studentName = list[i].getElementsByTagName('h3')[0].textContent;
-         if (studentName.toUpperCase().indexOf(searchTerm) > -1) {
-            searchResults.push(list[i]);
-         } else {
-            list[i].style.display = 'none';
-         }
+   // Find all the matching students
+   for (let i = 0; i < list.length; i++) {
+      const studentName = list[i].getElementsByTagName('h3')[0].textContent;
+      if (studentName.toUpperCase().indexOf(searchTerm) > -1) {
+         searchResults.push(list[i]);
+      } else {
+         list[i].style.display = 'none';
       }
+   }
 
+   if (searchResults.length > 0) {
+      // Show filtered results
+      message.textContent = '';
       showPage(searchResults, 1);
-      appendPageLinks(searchResults);
-   });
-};
+   } else {
+      // Show no results message
+      message.textContent = 'No results';
+   }
+   appendPageLinks(searchResults);
+}
+
+searchBtn.addEventListener('click', function (e) {
+   e.preventDefault();
+   doSearch();
+});
+
+searchInput.addEventListener('keyup', function (e) {
+   doSearch();
+})
