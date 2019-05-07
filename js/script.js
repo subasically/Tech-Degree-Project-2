@@ -14,6 +14,14 @@ FSJS project 2 - List Filter and Pagination
 const list = document.getElementsByClassName('student-item');
 const pageLength = 10;
 
+// Setup the pagination html
+const page = document.querySelector('div.page');
+const div = document.createElement('div');
+const ul = document.createElement('ul');
+page.appendChild(div);
+div.setAttribute('class', 'pagination');
+div.appendChild(ul);
+
 /*** 
    Uses the 'page' param to determine the START and END index
    of the student list and then loops through the 'list' param
@@ -42,23 +50,11 @@ appendPageLinks(list);
 /***
    Take the 'list' param and create the pagination links
 ***/
+
 function appendPageLinks(list) {
-   const page = document.querySelector('div.page');
-   const div = document.createElement('div');
-   const ul = document.createElement('ul');
    // Determine how many pagination <li> we need
    paginationLength = Math.ceil(list.length / pageLength);
-
-   // Do we need to create or update the pagination
-   if (!document.querySelector('div.pagination')) {
-      page.appendChild(div);
-      div.setAttribute('class', 'pagination');
-      div.appendChild(ul);
-   } else {
-      // Clear pagination list
-      document.querySelector("div.pagination > ul").remove();
-      document.querySelector("div.pagination").appendChild(ul);
-   }
+   ul.innerHTML = "";
 
    // Create the <li> with <a> inside
    for (let i = 0; i < paginationLength; i++) {
@@ -115,7 +111,7 @@ const doSearch = () => {
       // Collect all the matching students into an array to pass to the showPage function
       if (studentName.toUpperCase().indexOf(searchTerm) > -1) {
          searchResults.push(list[i]);
-      } else {// Hide any students that do not match the users search
+      } else { // Hide any students that do not match the users search
          list[i].style.display = 'none';
       }
    }
