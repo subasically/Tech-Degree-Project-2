@@ -14,8 +14,6 @@ FSJS project 2 - List Filter and Pagination
 const list = document.getElementsByClassName('student-item');
 const pageLength = 10;
 
-
-
 /*** 
    Uses the 'page' param to determine the START and END index
    of the student list and then loops through the 'list' param
@@ -41,7 +39,6 @@ function showPage(list, page) {
 showPage(list, 1);
 appendPageLinks(list);
 
-
 /***
    Take the 'list' param and create the pagination links
 ***/
@@ -52,6 +49,7 @@ function appendPageLinks(list) {
    // Determine how many pagination <li> we need
    paginationLength = Math.ceil(list.length / pageLength);
 
+   // Do we need to create or update the pagination
    if (!document.querySelector('div.pagination')) {
       page.appendChild(div);
       div.setAttribute('class', 'pagination');
@@ -68,6 +66,7 @@ function appendPageLinks(list) {
       const anchor = document.createElement('a');
       const anchorText = document.createTextNode(i + 1);
       anchor.setAttribute('href', '#');
+      // Set the first page as the active one for now
       i === 0 ? anchor.setAttribute('class', 'active') : '';
 
       anchor.addEventListener('click', function (e) {
@@ -80,12 +79,13 @@ function appendPageLinks(list) {
          current.className = 'active';
          showPage(list, current.textContent);
       })
+      // Add the list and anchors to the pagination div
       ul.appendChild(li).appendChild(anchor).appendChild(anchorText);
    }
 };
 
 /***
-   Create the search box and handle the search logic
+   Create the search variables and perform the search.
 ***/
 const pageHeader = document.getElementsByClassName('page-header');
 const searchDiv = document.createElement('div');
@@ -104,6 +104,7 @@ message.style.textAlign = 'center';
 message.id = 'noResultsMessage';
 document.querySelector('.student-list').appendChild(message);
 
+// Takes the users search input and filters the student list
 const doSearch = () => {
    const searchTerm = searchInput.value.toUpperCase();
    const searchResults = [];
@@ -111,21 +112,22 @@ const doSearch = () => {
    // Find all the matching students
    for (let i = 0; i < list.length; i++) {
       const studentName = list[i].getElementsByTagName('h3')[0].textContent;
+      // Collect all the matching students into an array to pass to the showPage function
       if (studentName.toUpperCase().indexOf(searchTerm) > -1) {
          searchResults.push(list[i]);
-      } else {
+      } else {// Hide any students that do not match the users search
          list[i].style.display = 'none';
       }
    }
 
+   // Show matching results or show no results message
    if (searchResults.length > 0) {
-      // Show filtered results
       message.textContent = '';
       showPage(searchResults, 1);
    } else {
-      // Show no results message
       message.textContent = 'No results';
    }
+   // Update pagination links
    appendPageLinks(searchResults);
 }
 
